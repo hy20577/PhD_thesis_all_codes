@@ -8,4 +8,4 @@ The last few decades have witnessed the emergence of network science, aimed at m
 
 The copyright of this thesis rests with the author. No quotations from it should be published without the author’s prior written consent, and information derived from it should be acknowledged. Please cite as follows: 
 
-Yıldırım, H., 2024. \textit{Network inference using information-theoretical approaches, statistical hypothesis tests, and the amplitude-phase modulated surrogate data method}. Thesis (PhD). University of Essex.
+Yıldırım, H., 2024. _Network inference using information-theoretical approaches, statistical hypothesis tests, and the amplitude-phase modulated surrogate data method_. Thesis (PhD). University of Essex.
