@@ -15,6 +15,8 @@ The last few decades have witnessed the emergence of network science, aimed at m
 * **Chapter 7:** Network inference using amplitude-phase modulated surrogate data (APMSD) method
 * **Chapter 8:** Conclusion & outlook
 
+This GitHub repository contains all Matlab codes to re-produce the results presented in the thesis from Chapters 2-7.
+
 >[!Note]
 > The copyright of this thesis rests with the author. No quotations from it should be published without the author’s prior written consent, and information derived from it should be acknowledged. Please cite as follows:
 
