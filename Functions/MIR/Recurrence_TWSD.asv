@@ -1,0 +1,129 @@
+function SD = Recurrence_TWSD(Dat, delta, n, RP_plot)
+
+% INPUTS
+% Dat --> Data with higher dimensional (at least 2)
+% delta --> Distance parameter
+% n --> number of surrogate data
+% RP_plot --> logical 0/1
+
+
+% Scale Data
+
+Norm_Orbits = zeros(size(Dat,1), size(Dat,2));
+M = size(Dat,2);
+len = size(Dat,1);
+
+
+for i = 1:M
+    Norm_Orbits(:,i) = (Dat(:,i) - min(Dat(:,i)))/(max(Dat(:,i)) - min(Dat(:,i)));
+end
+
+
+if ~exist('delta', 'var')
+    delta = 0.35;
+end
+
+RP = Recurrence_matrix(Norm_Orbits, delta); 
+
+
+[r c] = find(RP == 1);
+
+if RP_plot == 1
+    figure
+    plot(r,c, 'k.')
+    title('Recurrence Plot', 'interpreter', 'latex', 'Fontsize', 20)
+    pbaspect([1 1 1])
+end
+
+[C, ia, ic] = unique(RP,'rows', 'sorted');
+edges = linspace(0.1,len+0.1,len+1);
+[Nbins, edge] = histcounts(ic,edges);
+idx_multiplebins = find(Nbins > 1);
+
+if idx_multiplebins == ''
+    warning('No twins, change delta!')
+    return
+end
+notwns = [idx_multiplebins', Nbins(idx_multiplebins')'];
+
+notwns = {idx_multiplebins', Nbins(idx_multiplebins')'};
+
+for i=1:length(idx_multiplebins)
+    notwns{1,i+2} = [find(ic == idx_multiplebins(i))];
+end
+
+
+ind_twins = find(ic == 1);
+SD = zeros(len,M, n);
+
+
+for k=1:n
+    rn = randi(len);
+    SD(1,:, n) = Dat(rn,:); % randomly chosen initial point.
+
+    for i=1:len-1
+        rn = rn+1;
+
+        if rn == len  % to back the first point when it come to end.
+            rn = 1;
+        end
+        nogroups = size(notwns,2)-2;
+        
+        for l =1:nogroups
+            if sum(rn == notwns{l+2}) == 1
+            rnd_id = randi(length(notwns{l}));
+            rn =  notwns{l}{rnd_id};
+            SD(i+1,:, n) = Dat(rn,:);
+            end
+        end
+
+
+
+
+        if  sum(rn == ind_twins) == 1
+            r1 = randi(length(ind_twins));
+            rn = ind_twins(r1);
+            SD(i+1,:, n) = Dat(rn,:);
+        else
+            SD(i+1,: ,n) = Dat(rn,:); 
+        end
+    end
+
+
+
+end
+
+end
+%% Euclidean Distance Function
+
+function RP = Recurrence_matrix(Dat, delta)
+
+N = size(Dat,1); % number of rows 
+RP = zeros(N,N);
+
+if ~exist('delta', 'var')
+    delta = 0.5;
+end
+
+M = size(Dat,2);
+
+% M-dimensional Euclidean Distance
+
+
+for i=1:N-1
+    for j=i+1:N       
+        S = sum((Dat(i,:) - Dat(j,:)).^2);
+        S = S^(1/M);
+
+        if delta - S >0
+            RP(i,j) = 1;
+        else
+            RP(i,j) = 0;
+        end
+    end
+end
+
+RP = RP + RP';
+end
+
+
